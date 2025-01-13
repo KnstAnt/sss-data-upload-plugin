@@ -69,7 +69,7 @@ impl Parser {
                 let data = data.get("General").ok_or(Error::FromString(format!(
                     "Parser convert error: no general!"
                 )))?;
-                let mut table = General::new(data.to_owned(), Rc::clone(&self.api_server));
+                let mut table = General::new(data.to_owned());
                 table.parse()?;
                 self.general = Some(table);
             }
@@ -398,7 +398,7 @@ impl Parser {
             std::fs::create_dir_all(format!("../{ship_name}/hold/"))?;
             std::fs::create_dir_all(format!("../{ship_name}/loads/"))?;
             std::fs::create_dir_all(format!("../{ship_name}/test/"))?;
-       //     self.write_data_to_file(ship_id, &ship_name)?;
+            self.write_data_to_file(ship_id, &ship_name)?;
             self.write_tests_to_file(ship_id, &ship_name)?;
         } else {
             return Err(Error::FromString(

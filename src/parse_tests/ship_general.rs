@@ -20,26 +20,26 @@ impl ShipGeneral {
     }
     //
     pub fn to_string(&self, ship_id: usize) -> String {
-        let limit_area = self.parsed.get("Акватория").expect("Test ShipGeneral to_string no value for limit_area!");
-        let limit_area = match limit_area.as_str() {
+        let water_area = self.parsed.get("Акватория").expect("Test ShipGeneral to_string no value for water_area!");
+        let water_area = match water_area.as_str() {
             "Море" => "sea",
             "Порт" => "harbor",
-            text => panic!("{}", format!("Test ShipGeneral to_string limit_area wrong value:{text}!")),
+            text => panic!("{}", format!("Test ShipGeneral to_string water_area wrong value:{text}!")),
         };
-        let mut result= format!("UPDATE ship SET limit_area='{limit_area}' WHERE id={ship_id};\n");
+        let mut result= format!("UPDATE voyage SET water_area='{water_area}' WHERE ship_id={ship_id};\n");
 
         let water_density = self.parsed.get("Плотность забортной воды [т/м^3]").expect("Test ShipGeneral to_string no value for water_density!");
-        result += &format!("UPDATE ship_parameters SET value={water_density} WHERE key='Water Density' AND ship_id={ship_id};\n");
+        result += &format!("UPDATE voyage SET density={water_density} WHERE ship_id={ship_id};\n");
        
         let icing = self.parsed.get("Обледенение").expect("Test ShipGeneral to_string no value for icing!");
-        result += &format!("UPDATE ship SET icing_type_id=(SELECT id FROM ship_icing WHERE icing_type='{icing}') WHERE id={ship_id};\n"); 
+        result += &format!("UPDATE voyage SET icing_type_id=(SELECT id FROM ship_icing WHERE icing_type='{icing}') WHERE ship_id={ship_id};\n"); 
 
         let wetting_timber = self.parsed.get("Намокание палубного лесного груза %").expect("Test ShipGeneral to_string no value for wetting_timber!");
         let wetting_timber = match wetting_timber.parse::<f64>() {
             Ok(value) => value,
             Err(_) => 0.,
         };     
-        result += &format!("UPDATE ship_parameters SET value={wetting_timber} WHERE key='Wetting of deck timber' AND ship_id={ship_id};\n");
+        result += &format!("UPDATE voyage SET wetting_timber={wetting_timber} ship_id={ship_id};\n");
 
         result
     }
